@@ -10,7 +10,7 @@ use the custom module.
 The power of dynamic inventory variables in ansible make it an excellent tool
 for managing cloud infrastructure. Ambari does much of the hard work in
 installing and configuring the hadoop ecosystem. This custom module helps us
-automate and simplify the management of dynamically provisioned hadoop clusters. 
+automate and simplify the management of dynamically provisioned hadoop clusters.
 
 ## Defining a blueprint
 The standard for ambari is to define a blueprint as a JSON file. This file maps
@@ -23,6 +23,11 @@ blueprint/host map files as well.
 
 ## Running the sample playbook
 Specify the appropriate vars in `ambari_state.yml` for your ambari server, and
-specify the appropriate services, groups, and hosts in `roles/ambari_state/files/blueprint.yml`
+specify the appropriate services, groups, and hosts in `roles/ambari_state/files/blueprint.yml`. This sample playbook simple executes
+the main task in the ambari_state role. See `roles/ambari_state/tasks/main.yml`
+for how to create, stop, start, and delete an ambari cluster.
 
 `ansible-playbook ambari_state.yml`
+
+## Dependencies
+This project uses the `requests` and `pyyaml` python packages. 
