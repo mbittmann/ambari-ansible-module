@@ -4,7 +4,7 @@
 - groups:
   - name: master
     cardinality: 1
-    configuration: []
+    configuration: []  # configuration ot yet implemented
     components:
       - NAMENODE
       - SECONDARY_NAMENODE
@@ -13,11 +13,11 @@
       - GANGLIA_SERVER
       - ZOOKEEPER_SERVER
     hosts:
-      - ip-10-0-3-49.ec2.internal
+      - host1
 
   - name: slaves
     cardinality: 1+
-    configuration: []
+    configuration: []  # configuration ot yet implemented
     components:
       - APP_TIMELINE_SERVER
       - DATANODE
@@ -27,4 +27,5 @@
       - MAPREDUCE2_CLIENT
       - ZOOKEEPER_CLIENT
     hosts:
-      - ip-10-0-3-148.ec2.internal
+      - host2
+      - host3
