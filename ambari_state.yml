@@ -1,0 +1,11 @@
+---
+  - name: Run ambari_state role
+    hosts: localhost
+    connection: local
+    vars:
+        ambari_host: localhost
+        ambari_port: 8080
+        ambari_user: admin
+        ambari_password: admin
+    roles:
+      - ambari_state

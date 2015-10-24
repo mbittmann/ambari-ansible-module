@@ -1,0 +1,30 @@
+---
+- stack_name: 'HDP'
+- stack_version: '2.2'
+- groups:
+  - name: master
+    cardinality: 1
+    configuration: []
+    components:
+      - NAMENODE
+      - SECONDARY_NAMENODE
+      - RESOURCEMANAGER
+      - HISTORYSERVER
+      - GANGLIA_SERVER
+      - ZOOKEEPER_SERVER
+    hosts:
+      - ip-10-0-3-49.ec2.internal
+
+  - name: slaves
+    cardinality: 1+
+    configuration: []
+    components:
+      - APP_TIMELINE_SERVER
+      - DATANODE
+      - HDFS_CLIENT
+      - NODEMANAGER
+      - YARN_CLIENT
+      - MAPREDUCE2_CLIENT
+      - ZOOKEEPER_CLIENT
+    hosts:
+      - ip-10-0-3-148.ec2.internal
