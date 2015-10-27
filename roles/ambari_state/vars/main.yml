@@ -1,5 +1,9 @@
 ---
 # vars file for ambari_state
+ambari_host: localhost
+ambari_port: 8080
+ambari_user: admin
+ambari_password: admin
 
 master_hosts: [host1]
 slave_hosts: [host2, host3, host4]
