@@ -176,7 +176,6 @@ def main():
             blueprint_var = p.get('blueprint_var')
             blueprint, host_map = blueprint_var_to_ambari_converter(blueprint_var)
             created_blueprint = False
-            module.exit_json(changed=True, results=blueprint)
 
             if not blueprint_exists(ambari_url, username, password, blueprint_name):
                 create_blueprint(ambari_url, username, password, blueprint_name, blueprint)
