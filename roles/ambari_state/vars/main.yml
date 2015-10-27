@@ -1,2 +1,33 @@
 ---
 # vars file for ambari_state
+
+master_hosts: [host1]
+slave_hosts: [host2, host3, host4]
+
+blueprint:
+  stack_name: HDP
+  stack_version: 2.2
+  groups:
+    - name : master
+      cardinality: 1
+      configuration: []  # configuration ot yet implemented
+      components:
+        - NAMENODE
+        - SECONDARY_NAMENODE
+        - RESOURCEMANAGER
+        - HISTORYSERVER
+        - GANGLIA_SERVER
+        - ZOOKEEPER_SERVER
+      hosts: "{{ master_hosts}}"
+    - name: slaves
+      cardinality: 1+
+      configuration: []  # configuration ot yet implemented
+      components:
+        - APP_TIMELINE_SERVER
+        - DATANODE
+        - HDFS_CLIENT
+        - NODEMANAGER
+        - YARN_CLIENT
+        - MAPREDUCE2_CLIENT
+        - ZOOKEEPER_CLIENT
+      hosts: "{{ slave_hosts }}"

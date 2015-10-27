@@ -115,7 +115,7 @@ def main():
         cluster_name=dict(type='str', default=None, required=True),
         cluster_state=dict(type='str', default=None, required=True,
                            choices=['present', 'absent', 'started', 'stopped']),
-        blueprint_yml=dict(type='str', required=False),
+        blueprint_var=dict(type='dict', required=False),
         blueprint_name=dict(type='str', default=None, required=False),
         wait_for_complete=dict(default=False, required=False, choices=BOOLEANS),
     )
@@ -140,7 +140,6 @@ def main():
     password = p.get('password')
     cluster_name = p.get('cluster_name')
     cluster_state = p.get('cluster_state')
-    blueprint_yml = p.get('blueprint_yml')
     blueprint_name = p.get('blueprint_name')
     wait_for_complete = p.get('wait_for_complete')
 
@@ -171,15 +170,14 @@ def main():
             request = delete_cluster(ambari_url, username, password, cluster_name)
             module.exit_json(changed=True, results=request.content)
         elif cluster_state == 'present':
-            if not p.get('blueprint_yml') or not blueprint_name:  # have neither name nor file
-                module.fail_json(msg="Must provide blueprint_yml and blueprint_name when cluster_state=='present'")
+            if not p.get('blueprint_var') or not blueprint_name:  # have neither name nor file
+                module.fail_json(msg="Must provide blueprint_var and blueprint_name when cluster_state=='present'")
 
-            bp_path = os.path.realpath(blueprint_yml)
-            if not os.path.exists(bp_path):
-                module.fail_json(msg='Failed to find file: {0}'.format(bp_path))
-
-            blueprint, host_map = yaml_to_ambari_converter(bp_path)
+            blueprint_var = p.get('blueprint_var')
+            blueprint, host_map = blueprint_var_to_ambari_converter(blueprint_var)
             created_blueprint = False
+            module.exit_json(changed=True, results=blueprint)
+
             if not blueprint_exists(ambari_url, username, password, blueprint_name):
                 create_blueprint(ambari_url, username, password, blueprint_name, blueprint)
                 created_blueprint = True
@@ -355,17 +353,8 @@ def delete(ambari_url, user, password, path):
     return r
 
 
-def yaml_to_ambari_converter(yaml_file_path):
-    f = open(yaml_file_path, 'r')
-    data = yaml.load(f)
-
-    data_dict = {}
-    for obj in data:
-        k = obj.keys()[0]
-        v = obj[k]
-        data_dict[k] = v
-
-    groups = data_dict['groups']
+def blueprint_var_to_ambari_converter(blueprint_var):
+    groups = blueprint_var['groups']
     new_groups = []
     host_map = []
     for group in groups:
@@ -373,17 +362,16 @@ def yaml_to_ambari_converter(yaml_file_path):
         for component in group['components']:
             components.append({'name': component})
         group['components'] = components
+        hosts = group.pop('hosts')
         new_groups.append(group)
         this_host_map = dict()
         this_host_map['name'] = group['name']
-        hosts = group['hosts']
         this_host_list = [{'fqdn': host} for host in hosts]
         this_host_map['hosts'] = this_host_list
         host_map.append(this_host_map)
-
     blueprint = dict()
     blueprint['host_groups'] = new_groups
-    blueprint['Blueprints'] = {'stack_name': data_dict['stack_name'], 'stack_version': data_dict['stack_version']}
+    blueprint['Blueprints'] = {'stack_name': blueprint_var['stack_name'], 'stack_version': blueprint_var['stack_version']}
 
     return blueprint, host_map
 
