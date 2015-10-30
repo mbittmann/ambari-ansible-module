@@ -12,32 +12,32 @@
       wait_for_complete: True
       blueprint_var: "{{ blueprint }}"
 
-  # - name: Stop the ambari cluster
-  #   ambari_cluster_state:
-  #     host: "{{ ambari_host }}"
-  #     port: "{{ ambari_port }}"
-  #     username: "{{ ambari_user }}"
-  #     password: "{{ ambari_password }}"
-  #     cluster_name: testcluster
-  #     cluster_state: stopped
-  #     wait_for_complete: True
-  #
-  # - name: Start the ambari cluster
-  #   ambari_cluster_state:
-  #     host: "{{ ambari_host }}"
-  #     port: "{{ ambari_port }}"
-  #     username: "{{ ambari_user }}"
-  #     password: "{{ ambari_password }}"
-  #     cluster_name: testcluster
-  #     cluster_state: started
-  #     wait_for_complete: True
-  #
-  # - name: Delete the ambari cluster
-  #   ambari_cluster_state:
-  #     host: "{{ ambari_host }}"
-  #     port: "{{ ambari_port }}"
-  #     username: "{{ ambari_user }}"
-  #     password: "{{ ambari_password }}"
-  #     cluster_name: testcluster
-  #     cluster_state: absent
-  #     wait_for_complete: True
+  - name: Stop the ambari cluster
+    ambari_cluster_state:
+      host: "{{ ambari_host }}"
+      port: "{{ ambari_port }}"
+      username: "{{ ambari_user }}"
+      password: "{{ ambari_password }}"
+      cluster_name: testcluster
+      cluster_state: stopped
+      wait_for_complete: True
+
+  - name: Start the ambari cluster
+    ambari_cluster_state:
+      host: "{{ ambari_host }}"
+      port: "{{ ambari_port }}"
+      username: "{{ ambari_user }}"
+      password: "{{ ambari_password }}"
+      cluster_name: testcluster
+      cluster_state: started
+      wait_for_complete: True
+
+  - name: Delete the ambari cluster
+    ambari_cluster_state:
+      host: "{{ ambari_host }}"
+      port: "{{ ambari_port }}"
+      username: "{{ ambari_user }}"
+      password: "{{ ambari_password }}"
+      cluster_name: testcluster
+      cluster_state: absent
+      wait_for_complete: True
