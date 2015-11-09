@@ -192,7 +192,9 @@ def main():
             request = create_cluster(ambari_url, username, password, cluster_name, blueprint_name, host_map)
             request_id = json.loads(request.content)['Requests']['id']
             if wait_for_complete:
-                wait_for_request_complete(ambari_url, username, password, cluster_name, request_id, 2)
+                status = wait_for_request_complete(ambari_url, username, password, cluster_name, request_id, 2)
+                if status != 'COMPLETED':
+                    module.fail_json(msg="Request failed with status {0}".format(status))
             request_status = get_request_status(ambari_url, username, password, cluster_name, request_id)
             module.exit_json(changed=True, results=request.content,
                              created_blueprint=created_blueprint, status=request_status)
