@@ -158,7 +158,9 @@ def main():
             request = set_cluster_state(ambari_url, username, password, cluster_name, state)
             if wait_for_complete:
                 request_id = json.loads(request.content)['Requests']['id']
-                wait_for_request_complete(ambari_url, username, password, cluster_name, request_id, 2)
+                status = wait_for_request_complete(ambari_url, username, password, cluster_name, request_id, 2)
+                if status != 'COMPLETED':
+                    module.fail_json(msg="Request failed with status {0}".format(status))
             module.exit_json(changed=True, results=request.content)
         elif cluster_state == 'absent':
             if not cluster_exists(ambari_url, username, password, cluster_name):
@@ -166,7 +168,9 @@ def main():
             if not can_delete_cluster(ambari_url, username, password, cluster_name):
                 request = set_cluster_state(ambari_url, username, password, cluster_name, 'INSTALLED')
                 request_id = json.loads(request.content)['Requests']['id']
-                wait_for_request_complete(ambari_url, username, password, cluster_name, request_id, 2)
+                status = wait_for_request_complete(ambari_url, username, password, cluster_name, request_id, 2)
+                if status != 'COMPLETED':
+                    module.fail_json(msg="Request failed with status {0}".format(status))
             request = delete_cluster(ambari_url, username, password, cluster_name)
             module.exit_json(changed=True, results=request.content)
         elif cluster_state == 'present':
@@ -264,11 +268,12 @@ def get_request_status(ambari_url, user, password, cluster_name, request_id):
 
 
 def wait_for_request_complete(ambari_url, user, password, cluster_name, request_id, sleep_time):
-    keep_looking = True
-    while keep_looking:
+    while True:
         status = get_request_status(ambari_url, user, password, cluster_name, request_id)
         if status == 'COMPLETED':
-            keep_looking = False
+            return status
+        elif status in ['FAILED', 'TIMEDOUT', 'ABORTED', 'SKIPPED_FAILED']:
+            return status
         else:
             time.sleep(sleep_time)
 
